@@ -11,6 +11,6 @@ public class Starter extends BootLauncher {
      * @param args 命令行参数
      */
     public static void main(final String[] args) {
-        new Starter().run(null, "chat-boot", args);
+        new Starter().run("chat", "chat-boot", args);
     }
 }

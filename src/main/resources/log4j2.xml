@@ -10,6 +10,7 @@
       <AppenderRef ref="Console"/>
     </Root>
     <Logger name="io.github.dbstarll" level="trace"/>
+    <Logger name="org.springframework.boot.context.config.ConfigDataLoaders" level="trace"/>
     <Logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="debug"/>
   </Loggers>
 </Configuration>
