@@ -24,7 +24,7 @@ class HttpClientConfiguration {
             factory.setProxy(proxy).setResolveFromProxy(true);
         }
 
-        return factory.setAutomaticRetries(false);
+        return factory.setAutomaticRetries(false).setConnectTimeout(5000).setSocketTimeout(5000);
     }
 
     @Bean

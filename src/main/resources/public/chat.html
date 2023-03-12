@@ -2,9 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Chat with GPT</title>
+    <link crossorigin="anonymous" rel="stylesheet" type="text/css"
+          href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+    <link crossorigin="anonymous" rel='stylesheet' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+    <link rel='stylesheet' href='/css/normalize.css'>
+    <link rel='stylesheet' href='/css/material-icons.css'>
+    <script crossorigin="anonymous" type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script crossorigin="anonymous" type="text/javascript"
+            src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <style>
+        html {
+            font-size: 14px;
+        }
+
+        #conversation {
+            display: flex;
+            flex-direction: column;
+            column-gap: 5px;
+            margin: 2px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            column-gap: 5px;
+            margin: 2px;
+        }
+    </style>
+    <script type="text/javascript">
+        function appendLog(status, message) {
+            let conversation = $('#conversation');
+            conversation.prepend($('<pre>').addClass(status).text(message));
+        }
+
+        function fail(jqXHR) {
+            let json = jqXHR.responseJSON;
+            let message = `[${jqXHR.status}]${json.type}: ${json.message}`;
+            appendLog('fail', message);
+        }
+
+        function done(data) {
+            let usage = `${data.usage.promptTokens} + ${data.usage.completionTokens} = ${data.usage.totalTokens}`;
+            let choice = data.choices[0];
+            let message;
+            if (choice.text) {
+                message = `[${usage}]${choice.finishReason}: ${choice.text}`;
+            } else if (choice.message) {
+                message = `[${usage}]${choice.finishReason}: ${choice.message.content}`;
+            } else {
+                message = `[${usage}]${choice.finishReason}: ${choice.toString()}`;
+            }
+            appendLog('done', message);
+        }
+
+        function chat(prompt, cb) {
+            $.post('/chat/chat', {prompt: prompt}, function (data) {
+                done(data);
+                appendLog('prompt', prompt);
+                cb(true);
+            }, 'json').fail(function (jqXHR) {
+                fail(jqXHR);
+                cb(false);
+            });
+        }
+
+        function chatSubmit(event) {
+            let prompt = $('input[name=prompt]', this);
+            let promptValue = prompt.val();
+            if (promptValue.length > 0) {
+                prompt.attr('disabled', 'disabled');
+                chat(promptValue, function (success) {
+                    prompt.removeAttr('disabled');
+                    if (success) {
+                        prompt.val('');
+                    }
+                    prompt.focus();
+                });
+            }
+            event.preventDefault();
+        }
+
+        $(function () {
+            $('form[name=chatForm]').submit(chatSubmit);
+        });
+    </script>
 </head>
 <body>
-中午
+<form name="chatForm">
+    <input name="prompt" type="text" size="100"/>
+</form>
+<div id="conversation">
+</div>
 </body>
 </html>
