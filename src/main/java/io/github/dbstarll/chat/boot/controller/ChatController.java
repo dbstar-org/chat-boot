@@ -1,6 +1,6 @@
-package io.github.dbstarll.chat.boot;
+package io.github.dbstarll.chat.boot.controller;
 
-import io.github.dbstarll.chat.boot.model.request.Prompt;
+import io.github.dbstarll.chat.boot.model.request.Question;
 import io.github.dbstarll.utils.net.api.ApiException;
 import io.github.dbstarll.utils.openai.OpenAiClient;
 import io.github.dbstarll.utils.openai.model.api.ChatCompletion;
@@ -21,6 +21,7 @@ import java.util.Collections;
 @Controller
 @RequestMapping(path = "/chat", produces = MediaType.APPLICATION_JSON_VALUE)
 class ChatController {
+    private static final int DEFAULT_MAX_TOKENS = 256;
     private final OpenAiClient openAiClient;
 
     ChatController(final OpenAiClient openAiClient) {
@@ -34,21 +35,21 @@ class ChatController {
 
     @PostMapping
     @ResponseBody
-    TextCompletion completions(final Prompt prompt) throws IOException, ApiException {
+    TextCompletion completion(final Question question) throws IOException, ApiException {
         final CompletionRequest request = new CompletionRequest();
-        request.setPrompt(prompt.getPrompt());
+        request.setPrompt(question.getContent());
         request.setModel("text-ada-001");
-        request.setMaxTokens(1024);
-        return openAiClient.completions(request);
+        request.setMaxTokens(DEFAULT_MAX_TOKENS);
+        return openAiClient.completion(request);
     }
 
     @PostMapping("/chat")
     @ResponseBody
-    ChatCompletion chat(final Prompt prompt) throws IOException, ApiException {
+    ChatCompletion chat(final Question question) throws IOException, ApiException {
         final ChatRequest request = new ChatRequest();
         request.setModel("gpt-3.5-turbo");
-        request.setMaxTokens(1024);
-        request.setMessages(Collections.singletonList(Message.user(prompt.getPrompt())));
+        request.setMaxTokens(DEFAULT_MAX_TOKENS);
+        request.setMessages(Collections.singletonList(Message.user(question.getContent())));
         return openAiClient.chat(request);
     }
 }

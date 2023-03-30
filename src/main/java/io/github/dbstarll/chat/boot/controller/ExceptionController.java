@@ -1,4 +1,4 @@
-package io.github.dbstarll.chat.boot;
+package io.github.dbstarll.chat.boot.controller;
 
 import io.github.dbstarll.utils.openai.ApiErrorException;
 import io.github.dbstarll.utils.openai.model.response.ApiError;

@@ -56,10 +56,10 @@
             appendLog('done', message);
         }
 
-        function chat(prompt, cb) {
-            $.post('/chat/chat', {prompt: prompt}, function (data) {
+        function chat(question, cb) {
+            $.post('/chat/chat', {content: question}, function (data) {
                 done(data);
-                appendLog('prompt', prompt);
+                appendLog('question', question);
                 cb(true);
             }, 'json').fail(function (jqXHR) {
                 fail(jqXHR);
@@ -68,16 +68,16 @@
         }
 
         function chatSubmit(event) {
-            let prompt = $('input[name=prompt]', this);
-            let promptValue = prompt.val();
-            if (promptValue.length > 0) {
-                prompt.attr('disabled', 'disabled');
-                chat(promptValue, function (success) {
-                    prompt.removeAttr('disabled');
+            let question = $('input[name=question]', this);
+            let content = question.val();
+            if (content.length > 0) {
+                question.attr('disabled', 'disabled');
+                chat(content, function (success) {
+                    question.removeAttr('disabled');
                     if (success) {
-                        prompt.val('');
+                        question.val('');
                     }
-                    prompt.focus();
+                    question.focus();
                 });
             }
             event.preventDefault();
@@ -90,7 +90,7 @@
 </head>
 <body>
 <form name="chatForm">
-    <input name="prompt" type="text" size="100"/>
+    <input name="question" type="text" size="100"/>
 </form>
 <div id="conversation">
 </div>

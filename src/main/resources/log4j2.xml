@@ -10,7 +10,7 @@
       <AppenderRef ref="Console"/>
     </Root>
     <Logger name="io.github.dbstarll.chat" level="debug"/>
-    <Logger name="io.github.dbstarll.utils.openai.OpenAiClient" level="trace"/>
+    <Logger name="io.github.dbstarll.utils.openai" level="trace"/>
     <Logger name="org.springframework.boot.context.config.ConfigDataLoaders" level="trace"/>
     <Logger name="_org.springframework.web.servlet.HandlerMapping.Mappings" level="debug"/>
   </Loggers>
