@@ -1,6 +1,7 @@
 package io.github.dbstarll.chat.boot.model.request;
 
 import java.io.Serializable;
+import java.util.StringJoiner;
 
 public final class Question implements Serializable {
     private String content;
@@ -21,5 +22,12 @@ public final class Question implements Serializable {
      */
     public void setContent(final String content) {
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Question.class.getSimpleName() + "[", "]")
+                .add("content='" + content + "'")
+                .toString();
     }
 }

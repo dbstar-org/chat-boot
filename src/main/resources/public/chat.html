@@ -31,15 +31,16 @@
         }
     </style>
     <script type="text/javascript">
-        function appendLog(status, message) {
+        function appendLog(status, message, eventId) {
             let conversation = $('#conversation');
-            conversation.prepend($('<pre>').addClass(status).text(message));
-        }
-
-        function fail(jqXHR) {
-            let json = jqXHR.responseJSON;
-            let message = `[${jqXHR.status}]${json.type}: ${json.message}`;
-            appendLog('fail', message);
+            if (typeof eventId === 'string') {
+                let exist = $('pre[eventId=' + eventId + "]", conversation);
+                if (exist.length > 0) {
+                    exist.text(exist.text() + message);
+                    return;
+                }
+            }
+            conversation.prepend($('<pre>').addClass(status).attr('eventId', eventId).text(message));
         }
 
         function done(data) {
@@ -57,14 +58,40 @@
         }
 
         function chat(question, cb) {
-            $.post('/chat/chat', {content: question}, function (data) {
-                done(data);
+            const evtSource = new EventSource('/chat/stream?content=' + encodeURI(question));
+            evtSource.onopen = () => {
                 appendLog('question', question);
-                cb(true);
-            }, 'json').fail(function (jqXHR) {
-                fail(jqXHR);
+            };
+            evtSource.onerror = (e) => {
+                evtSource.close();
+                appendLog('fail', e);
                 cb(false);
-            });
+            };
+            evtSource.onmessage = (e) => {
+                const msg = JSON.parse(e.data);
+                if ('STREAM' === msg.state) {
+                    $.each(msg.data, (_, c) => {
+                        if (typeof c.text === 'string') {
+                            appendLog('done', c.text, e.lastEventId);
+                        } else if (typeof c.delta === 'object') {
+                            if (typeof c.delta.role === 'string') {
+                                appendLog('done', '[' + c.delta.role + ']', e.lastEventId);
+                            }
+                            if (typeof c.delta.content === 'string') {
+                                appendLog('done', c.delta.content, e.lastEventId);
+                            }
+                        } else {
+                            console.log(c);
+                        }
+                        if (typeof c.finishReason === 'string') {
+                            appendLog('done', '[' + c.finishReason + ']', e.lastEventId);
+                        }
+                    });
+                } else {
+                    evtSource.close();
+                    cb(true);
+                }
+            };
         }
 
         function chatSubmit(event) {
