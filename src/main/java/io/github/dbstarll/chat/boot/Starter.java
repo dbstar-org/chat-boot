@@ -2,8 +2,10 @@ package io.github.dbstarll.chat.boot;
 
 import io.github.dbstarll.utils.spring.boot.BootLauncher;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
+@EnableAsync
 public class Starter extends BootLauncher {
     /**
      * 启动类.

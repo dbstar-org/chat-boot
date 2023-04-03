@@ -1,3 +1,6 @@
 spring:
   jackson:
     default-property-inclusion: NON_EMPTY
+  mvc:
+    async:
+      request-timeout: 180000

@@ -68,8 +68,13 @@ public class SseEmitterFutureCallback<C extends Choice, T extends BaseCompletion
 
     @Override
     public void failed(final Exception ex) {
-        send(State.ERROR, ex.getMessage(), null);
-        emitter.completeWithError(ex);
+        try {
+            send(State.ERROR, ex.getMessage(), null);
+        } catch (Exception e) {
+            // ignore
+        } finally {
+            emitter.completeWithError(ex);
+        }
     }
 
     @Override

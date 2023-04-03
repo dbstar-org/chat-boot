@@ -64,6 +64,7 @@
             };
             evtSource.onerror = (e) => {
                 evtSource.close();
+                console.log('fail', e);
                 appendLog('fail', e);
                 cb(false);
             };
