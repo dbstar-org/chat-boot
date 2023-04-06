@@ -40,6 +40,10 @@ class TestStreamChatEventListener implements ApplicationListener<StreamChatEvent
                 try {
                     callback.stream(chunk(id, choiceContent(duration.toString() + "\n")));
                     Thread.sleep(INTERVAL);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    callback.failed(e);
+                    return;
                 } catch (Exception e) {
                     callback.failed(e);
                     return;

@@ -71,7 +71,7 @@ class ChatController implements ApplicationEventPublisherAware {
     @GetMapping(path = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseBody
     SseEmitter stream(final Question question) {
-        LOGGER.info("stream: {}", question);
+        LOGGER.info("stream: {}", question.getContent());
         final SseEmitter emitter = new SseEmitter();
         applicationEventPublisher.publishEvent(new StreamChatEvent(question, emitter));
         return emitter;

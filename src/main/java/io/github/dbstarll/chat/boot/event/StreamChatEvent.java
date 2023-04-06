@@ -6,7 +6,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public final class StreamChatEvent extends ApplicationEvent {
     private final Question question;
-    private final SseEmitter emitter;
+    private final transient SseEmitter emitter;
 
     /**
      * 构造StreamChatEvent.
