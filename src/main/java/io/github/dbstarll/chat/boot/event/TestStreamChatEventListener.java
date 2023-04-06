@@ -8,8 +8,6 @@ import io.github.dbstarll.utils.openai.model.fragment.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,8 +15,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
-@Async
-@Component
+//@Async
+//@Component
 class TestStreamChatEventListener implements ApplicationListener<StreamChatEvent> {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestStreamChatEventListener.class);
     private static final Duration TIMEOUT = Duration.ofSeconds(10);
