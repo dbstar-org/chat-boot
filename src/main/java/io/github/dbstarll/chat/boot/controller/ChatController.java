@@ -9,8 +9,6 @@ import io.github.dbstarll.utils.openai.model.api.TextCompletion;
 import io.github.dbstarll.utils.openai.model.fragment.Message;
 import io.github.dbstarll.utils.openai.model.request.ChatRequest;
 import io.github.dbstarll.utils.openai.model.request.CompletionRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.http.MediaType;
@@ -27,7 +25,6 @@ import java.util.Collections;
 @Controller
 @RequestMapping(path = "/chat", produces = MediaType.APPLICATION_JSON_VALUE)
 class ChatController implements ApplicationEventPublisherAware {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChatController.class);
     private static final int DEFAULT_MAX_TOKENS = 512;
 
     private final OpenAiClient openAiClient;
@@ -71,7 +68,6 @@ class ChatController implements ApplicationEventPublisherAware {
     @GetMapping(path = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseBody
     SseEmitter stream(final Question question) {
-        LOGGER.info("stream: {}", question.getContent());
         final SseEmitter emitter = new SseEmitter();
         applicationEventPublisher.publishEvent(new StreamChatEvent(question, emitter));
         return emitter;
